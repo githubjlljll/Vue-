@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<!-- 在Vue2.0之前用的是Vue resourse。但是之后作者不维护了，所以现在都用axios插件，进行异步请求 -->
+	<script src='https://cdn.bootcss.com/vue/2.2.2/vue.min.js'></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+		.box{
+			border:1px solid red;
+			border-top:none;
+		}
+		.active{
+			background-color:red;
+		}
+	</style>
+</head>
+<body>
+	<div id='app'>
+	<div :class="{'box':true,'active':item.isactive}"    v-for="(item,index) in array" @click='addclass(item)'>
+		<p>{{item.id}}</p>
+		<p>{{item.content}}</p>
+		<p></p>
+		<button @click='deletedom(index)'>删除本个</button>
+		<button  @click='update(item)'>修改</button>
+	</div>
+	<button @click='request()'>先请求</button>
+		<button @click='add()'>增加</button>
+
+
+	
+	</div>
+
+	<script>
+	var app=new Vue({
+		el:'#app',
+		data:{
+			array:[]
+		},
+		methods:{
+			request:function(){
+				 var url  = "http://rap2api.taobao.org/app/mock/3236/POST/todolist";  
+            // 发送请求:将数据返回到一个回到函数中
+           var that = this;
+            // 并且响应成功以后会执行then方法中的回调函数
+            axios.get(url).then(function(result) {
+            	console.log(1)
+            	that.array=result.data.data;
+            	that.array.forEach(function(item){
+            	that.$set(item,'isactive',false)
+
+            	});
+            	// 全局方法Vue.和实例方法VM.要区分，不是一个
+            	// 	Vue.nextTick(function(){
+            	// // 再dom视图变化后在写业务逻辑
+            	// 	// $el===document.getElementById('app');
+            		// 整个app dom元素
+            	// 	console.log(that.$el.children[0].textContent)
+            	// })
+            	// 可通过挂载属性去修改里面data属性的值
+            	// nextTick这样回调函数在 DOM 更新完成后就会调用
+                 // result是所有的返回回来的数据
+                // 包括了响应报文行                // 响应报文头              // 响应报文体             
+			})
+		},
+				aler:function(item){
+					// 获取当前dom元素
+						console.log(item.currentTarget);
+						console.log(item.target);
+				},
+				deletedom:function(index){
+						 this.array.splice(index, 1)
+						 // 可以检测到数组的增删该差
+						 // 不能检测到对象属性的增删
+						 // 可以检测对象属性的改-----更新
+				},
+				update:function(item){
+					// 基本上都是引用对象，引用类型，引用地址
+								item.content='jll'
+				},
+				add:function(){
+						this.array.push({content:'增加',id:0});
+				},
+				addclass:function(item){
+					this.array.forEach(function(value){
+						value.isactive=false;
+					});
+						item.isactive=true;
+				}
+				}
+
+	});
+
+	</script>
+</body>
+</htmlfal
